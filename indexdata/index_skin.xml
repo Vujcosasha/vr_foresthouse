@@ -1205,6 +1205,12 @@
       inc(controlBar_dockedThumbnailsbutton_pos, 36);
 
 
+      set(layer[controlBar_dockedThumbnailsbtn_sound_on].x , get(controlBar_dockedThumbnailsbutton_pos));
+      set(layer[controlBar_dockedThumbnailsbtn_sound_on_bg].x , get(controlBar_dockedThumbnailsbutton_pos));
+      set(layer[controlBar_dockedThumbnailsbtn_sound_off].x, get(controlBar_dockedThumbnailsbutton_pos));
+      set(layer[controlBar_dockedThumbnailsbtn_sound_off_bg].x, get(controlBar_dockedThumbnailsbutton_pos));
+      inc(controlBar_dockedThumbnailsbutton_pos, 36);
+
 
       if (device.desktop,
         set(layer[controlBar_dockedThumbnailsbtn_ctrlmode_drag_to].x, get(controlBar_dockedThumbnailsbutton_pos));
@@ -1667,6 +1673,24 @@
            />
 
 
+    <layer name="controlBar_dockedThumbnailsbtn_sound_on_bg" style="controlBar_dockedThumbnails_btn_style_bg" visible="false" />
+    <layer name="controlBar_dockedThumbnailsbtn_sound_on"
+           url="%FIRSTXML%/graphics/dockedthumbscontrolbar/btn_start_sound.png"
+           onclick="playTourSounds();
+"
+           style="controlBar_dockedThumbnails_btn_style"
+           visible="false"
+           tooltip="controlBar_dockedThumbnailssoundsOnTip"
+           />
+    <layer name="controlBar_dockedThumbnailsbtn_sound_off_bg" style="controlBar_dockedThumbnails_btn_style_on_bg" visible="false" />
+    <layer name="controlBar_dockedThumbnailsbtn_sound_off"
+           url="%FIRSTXML%/graphics/dockedthumbscontrolbar/btn_stop_sound.png"
+           onclick="stopTourSounds();
+"
+           style="controlBar_dockedThumbnails_btn_style_on"
+           visible="false"
+           tooltip="controlBar_dockedThumbnailssoundsOffTip"
+           />
 
 
 
@@ -1799,6 +1823,7 @@
 		controlBar_dockedThumbnailsupdateAutorotationButtons();
 
 		controlBar_dockedThumbnailsupdateGyroscopeButtons();
+		controlBar_dockedThumbnailsupdateSoundButtons();
 
 		controlBar_dockedThumbnailsupdateControlModeButtons();
 		controlBar_dockedThumbnailsupdateFullscreenButtons();
@@ -1809,6 +1834,7 @@
       controlBar_dockedThumbnailsupdateFullscreenButtons();
       controlBar_dockedThumbnailsupdateAutorotationButtons();
 
+      controlBar_dockedThumbnailsupdateSoundButtons();
       controlBar_dockedThumbnailsupdateGyroscopeButtons();
 
       controlBar_dockedThumbnailsupdateControlModeButtons();
@@ -1962,6 +1988,34 @@
 		);
 	</action>
 
+
+	<events name="controlBar_dockedThumbnailsplaystopsoundsevent" playtoursoundsevent="controlBar_dockedThumbnailsupdateSoundButtons();" stoptoursoundsevent="controlBar_dockedThumbnailsupdateSoundButtons();" keep="true"/>
+	<action name="controlBar_dockedThumbnailsHideSoundButtons">
+		set(layer[controlBar_dockedThumbnailsbtn_sound_off].visible, false);
+		set(layer[controlBar_dockedThumbnailsbtn_sound_on].visible , false);
+		set(layer[controlBar_dockedThumbnailsbtn_sound_off_bg].visible, false);
+		set(layer[controlBar_dockedThumbnailsbtn_sound_on_bg].visible, false);
+	</action>
+	<action name="controlBar_dockedThumbnailsShowSoundButtons">
+		if (tour_soundson == false,
+			set(layer[controlBar_dockedThumbnailsbtn_sound_off].visible, false);
+			set(layer[controlBar_dockedThumbnailsbtn_sound_on].visible , true);
+			set(layer[controlBar_dockedThumbnailsbtn_sound_off_bg].visible, false);
+			set(layer[controlBar_dockedThumbnailsbtn_sound_on_bg].visible, true);
+		,
+			set(layer[controlBar_dockedThumbnailsbtn_sound_off].visible, true);
+			set(layer[controlBar_dockedThumbnailsbtn_sound_on].visible , false);
+			set(layer[controlBar_dockedThumbnailsbtn_sound_off_bg].visible, true);
+			set(layer[controlBar_dockedThumbnailsbtn_sound_on_bg].visible, false);
+		);
+	</action>
+	<action name="controlBar_dockedThumbnailsupdateSoundButtons">
+		if (controlBar_dockedThumbnailsIsOpened,
+			controlBar_dockedThumbnailsShowSoundButtons();
+		,
+			controlBar_dockedThumbnailsHideSoundButtons();
+		);
+	</action>
 
 
 	<layer name="controlBar_dockedThumbnailsmenuTooltipStyle"
@@ -2867,6 +2921,150 @@
   <action name="hideTourControls">set(tour_displaycontrols, false);events.dispatch(hidetourcontrols);</action>
   <action name="showTourControls">set(tour_displaycontrols, true); events.dispatch(showtourcontrols);</action>
 
+
+  <!-- Sounds Management -->
+
+  <action name="play3DLocalSounds">
+    if (xml.scene, if (scene[get(xml.scene)].haslocalsounds, playpanolocalsounds();););
+  </action>
+  <action name="stop3DLocalSounds">
+    if (xml.scene, if (scene[get(xml.scene)].haslocalsounds, stoppanolocalsounds();););
+  </action>
+  <action name="resume3DLocalSounds">
+    if (xml.scene, if (scene[get(xml.scene)].haslocalsounds, 
+      set(kill3dSoundOnResume, true);
+      if(layer[displayedStandardVideo],
+      if(layer[displayedStandardVideo].pausebgsound,
+      if(tour_current_played_video,
+        set(kill3dSoundOnResume, false);
+      );););
+      if(layer[webvideodisplay_player],
+      if(layer[webvideodisplay_player].pausebgsound,
+      if(tour_current_played_web_video,
+        set(kill3dSoundOnResume, false);
+      );););
+      if(tour_current_played_sound_pausesound,
+      if(tour_current_played_sound,
+        set(kill3dSoundOnResume, false);
+      ););
+      if(kill3dSoundOnResume,
+        resumepanolocalsounds();
+      );
+    ););
+  </action>
+  <action name="pause3DLocalSounds">
+    if (xml.scene, if (scene[get(xml.scene)].haslocalsounds, pausepanolocalsounds();););
+  </action>
+  <action name="set3DLocalSoundsVolume">
+    if (xml.scene, if (scene[get(xml.scene)].haslocalsounds, setpanolocalsoundsvolume();););
+  </action>
+  <action name="playTourSounds">
+    set(tour_soundson, true);events.dispatch(playtoursoundsevent);
+    resumeTourSoundsActions(true,true,true,true,true);
+  </action>
+  <action name="stopTourSounds">
+    set(tour_soundson, false);events.dispatch(stoptoursoundsevent);
+    pauseTourSoundsActions(true,true,true,true,true);
+  </action>
+  <action name="setTourSoundsVolume">
+    set(tour_soundsvolume, %1);events.dispatch(changetoursoundsevent);
+    set3DLocalSoundsVolume();
+  </action>
+  <action name="playTourSoundsActions">
+    if(%1,
+        play3DLocalSounds();
+    );
+  </action>
+  <action name="stopTourSoundsActions">
+    if(%1,
+      stop3DLocalSounds();
+    );
+    if(%3,
+      stopVideoActionsSounds();
+    );
+  </action>
+  <action name="resumeTourSoundsActions">
+    if(%1,
+        resume3DLocalSounds();
+    );
+    if(%3,
+      resumeVideoActionsSounds();
+    );
+  </action>
+  <action name="pauseTourSoundsActions">
+    if(%1,
+      pause3DLocalSounds();
+    );
+    if(%3,
+      pauseVideoActionsSounds();
+    );
+  </action>
+  <action name="stopVideoActionsSounds">
+    if(tour_current_played_video,
+      if(layer[displayedStandardVideo],
+        layer[displayedStandardVideo].stop();
+        removelayer(displayedStandardVideo);
+        if(layer[displayedStandardVideoOverlayButton], removelayer(displayedStandardVideoOverlayButton); );
+        if(layer[displayedStandardVideoOverlay], removelayer(displayedStandardVideoOverlay); );
+        delete(tour_current_played_video);
+        set(tour_current_played_video_state, 0);
+      );
+    );
+    if(tour_current_played_web_video,
+      displayWebVideoObjectClose();
+    );
+  </action>
+  <action name="resumeVideoActionsSounds">
+    if(tour_current_played_video,
+      set(resumeVideoActionsVerification, true);
+      if(tour_current_played_sound,
+        if(tour_current_played_video_state LT tour_current_played_sound_state,
+          set(resumeVideoActionsVerification, false);
+        );
+      );
+      if(resumeVideoActionsVerification,
+        if (tour_soundson,
+          if(device.flash OR (device.webgl AND !device.ios),
+            div(volume, tour_soundsvolume, 100);
+            set(layer[displayedStandardVideo].volume, get(volume));
+          ,
+            ifnot(device.ios,
+              js(kpanotour.Sounds.startVideosSounds(get(volume)));
+            ,
+              if(tour_soundsvolume GT 0,
+                set(layer[displayedStandardVideo].muted, false);
+              ,
+                set(layer[displayedStandardVideo].muted, true);
+              );
+            );
+          );
+        ,
+          if(device.flash OR (device.webgl AND !device.ios),
+            set(layer[displayedStandardVideo].volume, 0);
+          ,
+            ifnot(device.ios,
+              js(kpanotour.Sounds.stopVideosSounds());
+            ,
+              set(layer[displayedStandardVideo].muted, true);
+            );
+          );
+        );
+      );
+    );
+  </action>
+  <action name="pauseVideoActionsSounds">
+    if(tour_current_played_video,
+      if(device.flash OR (device.webgl AND !device.ios),
+        set(layer[displayedStandardVideo].volume, 0);
+      ,
+        ifnot(device.ios,
+          js(kpanotour.Sounds.stopVideosSounds());
+        ,
+          set(layer[displayedStandardVideo].muted, true);
+        );
+      );
+    );
+  </action>
 
 <action name="viewControlZoomIn">
 	if(%1,

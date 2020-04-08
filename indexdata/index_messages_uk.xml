@@ -44,6 +44,8 @@
   <data name="uk_controlBar_dockedThumbnailscloseFsTip"><![CDATA[Exit fullscreen]]></data>
   <data name="uk_controlBar_dockedThumbnailsautorotateOnTip"><![CDATA[Start autorotation]]></data>
   <data name="uk_controlBar_dockedThumbnailsautorotateOffTip"><![CDATA[Stop autorotation]]></data>
+  <data name="uk_controlBar_dockedThumbnailssoundsOnTip"><![CDATA[Start sounds]]></data>
+  <data name="uk_controlBar_dockedThumbnailssoundsOffTip"><![CDATA[Stop sounds]]></data>
   <data name="uk_controlBar_dockedThumbnailsgyroOnTip"><![CDATA[Enable gyroscope]]></data>
   <data name="uk_controlBar_dockedThumbnailsgyroOffTip"><![CDATA[Disable gyroscope]]></data>
   <data name="uk_controlBar_dockedThumbnailsgyroNotTip"><![CDATA[Gyroscope is unavailable]]></data>
