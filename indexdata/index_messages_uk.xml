@@ -34,23 +34,12 @@
   <data name="uk_contextmenupanninilabel"><![CDATA[Pannini View]]></data>
   <data name="uk_contextmenulittleplanetlabel"><![CDATA[Little Planet View]]></data>
   <data name="uk_contextmenufisheyeballlabel"><![CDATA[Fisheye Ball View]]></data>
-  <data name="uk_controlBar_dockedThumbnailszoomInTip"><![CDATA[Zoom in]]></data>
-  <data name="uk_controlBar_dockedThumbnailszoomOutTip"><![CDATA[Zoom out]]></data>
-  <data name="uk_controlBar_dockedThumbnailsmoveLeftTip"><![CDATA[Move left]]></data>
-  <data name="uk_controlBar_dockedThumbnailsmoveRightTip"><![CDATA[Move right]]></data>
-  <data name="uk_controlBar_dockedThumbnailsmoveUpTip"><![CDATA[Move up]]></data>
-  <data name="uk_controlBar_dockedThumbnailsmoveDownTip"><![CDATA[Move down]]></data>
   <data name="uk_controlBar_dockedThumbnailsopenFsTip"><![CDATA[Enter fullscreen]]></data>
   <data name="uk_controlBar_dockedThumbnailscloseFsTip"><![CDATA[Exit fullscreen]]></data>
-  <data name="uk_controlBar_dockedThumbnailsautorotateOnTip"><![CDATA[Start autorotation]]></data>
-  <data name="uk_controlBar_dockedThumbnailsautorotateOffTip"><![CDATA[Stop autorotation]]></data>
   <data name="uk_controlBar_dockedThumbnailssoundsOnTip"><![CDATA[Start sounds]]></data>
   <data name="uk_controlBar_dockedThumbnailssoundsOffTip"><![CDATA[Stop sounds]]></data>
-  <data name="uk_controlBar_dockedThumbnailsgyroOnTip"><![CDATA[Enable gyroscope]]></data>
-  <data name="uk_controlBar_dockedThumbnailsgyroOffTip"><![CDATA[Disable gyroscope]]></data>
-  <data name="uk_controlBar_dockedThumbnailsgyroNotTip"><![CDATA[Gyroscope is unavailable]]></data>
-  <data name="uk_controlBar_dockedThumbnailsdisplayHelpTip"><![CDATA[Show help screen]]></data>
-  <data name="uk_controlBar_dockedThumbnailshideHelpTip"><![CDATA[Hide help screen]]></data>
+  <data name="uk_controlBar_dockedThumbnailsenterVRTip"><![CDATA[VR mode]]></data>
+  <data name="uk_controlBar_dockedThumbnailsenterVRNotTip"><![CDATA[VR mode is unavailable]]></data>
   <data name="uk_controlBar_dockedThumbnailsdisplayControlsTip"><![CDATA[Show controls]]></data>
   <data name="uk_controlBar_dockedThumbnailshideControlsTip"><![CDATA[Hide controls]]></data>
   <data name="uk_controlBar_dockedThumbnailsctrlmodeDragTip"><![CDATA[Change control mode]]></data>
@@ -96,6 +85,7 @@
   <data name="uk_vr_setup_unavailable"><![CDATA[VR mode[br]is unavailable on your device]]></data>
 
 
+  <data name="uk_project_description"><![CDATA[Индивидуальный частный дом. Площадь - 120м2.<div>Первый етаж:</div><div>1.Прхожая с гардеропом 9 м2.</div><div>2.Санузел 2.7 м2.</div><div>3.Каминный зал 31.8 м2.</div><div>4.Кухня 17.8 м2</div><div><br></div>]]></data>
 
 
 

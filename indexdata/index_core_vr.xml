@@ -92,6 +92,18 @@
     js(eventTourStarted());
   </action>
 
+  <events name="ptp_audio_events" devices="mobile.or.tablet.or.safari.or.chrome" keep="true"
+    onTourStart="ptp_audio_start_event();"
+    />
+  <action name="ptp_audio_start_event" devices="mobile.or.tablet.or.safari.or.chrome">
+    set(events[ptp_audio_events].onTourStart, null);
+    ptp_audio_start();
+  </action>
+  <action name="ptp_audio_start" devices="mobile.or.tablet.or.safari.or.chrome">
+    if (tour_soundson === true,
+      playTourSounds();
+    );
+  </action>
 
 
 
@@ -110,9 +122,12 @@
       events.dispatch(onleavingscene, true);
 
       interruptAnimation();
+      resetbackgroundsoundifneeded(%1);
+
+      set(videoscenestarttime, 0);
 
       for(set(scenei,0), scenei LT scene.count, inc(scenei),if(scene[get(scenei)].name == %1,
-      
+      stopTourSoundsActions(true,true,true,false);
 
 
       loadscene(%1, get(projection_current_params), NOPREVIEW|MERGE|KEEPVIEW|KEEPMOVING, get(ptblendmode));
@@ -553,7 +568,7 @@ stopautorotation();
 		mobilevr_autocalibration="false"
 		mobilevr_touch_support="false"
 		mobilevr_orientationlock="true"
-		mobilevr_fake_support="false"
+		mobilevr_fake_support="true"
 		vr_cursor="hotspot[vr_cursor]"
 		vr_cursor_enabled="true"
 		vr_cursor_onover="if(handcursor, tween(hotspot[vr_cursor].scale,0.4,0.1); vr_auto_click(get(vr_timeout)); );"
@@ -702,6 +717,9 @@ stopautorotation();
 
 	<action name="webvr_onentervr">
 
+        if(device.mobile OR device.tablet OR device.safari OR device.chrome,
+			ptp_audio_start();
+		);
 
 		vr_tour_start();
 

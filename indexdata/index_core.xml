@@ -96,6 +96,34 @@
     js(eventTourStarted());
   </action>
 
+  <events name="ptp_audio_events" devices="mobile.or.tablet.or.safari.or.chrome" keep="true"
+    onclick="ptp_audio_start_touch();"
+    onmouseup="ptp_audio_start_touch();"
+    onmousedown="ptp_audio_start_touch();"
+    onkeydown="ptp_audio_start_touch()"
+    onkeyup="ptp_audio_start_touch();"
+    onTourStart="ptp_audio_start_event();"
+    />
+  <action name="ptp_audio_start_touch" devices="mobile.or.tablet.or.safari.or.chrome">
+    ptp_audio_start();
+
+    set(events[ptp_audio_events].onclick, null);
+    set(events[ptp_audio_events].onmouseup, null);
+    set(events[ptp_audio_events].onmousedown, null);
+    set(events[ptp_audio_events].onkeydown, null);
+    set(events[ptp_audio_events].onkeyup, null);
+    set(events[ptp_audio_events].onTourStart, null);
+    set(events[ptp_audio_events].keep, false);
+  </action>
+  <action name="ptp_audio_start_event" devices="mobile.or.tablet.or.safari.or.chrome">
+    set(events[ptp_audio_events].onTourStart, null);
+    ptp_audio_start();
+  </action>
+  <action name="ptp_audio_start" devices="mobile.or.tablet.or.safari.or.chrome">
+    if (tour_soundson === true,
+      playTourSounds();
+    );
+  </action>
 
 
 
@@ -114,9 +142,12 @@
       events.dispatch(onleavingscene, true);
 
       interruptAnimation();
+      resetbackgroundsoundifneeded(%1);
+
+      set(videoscenestarttime, 0);
 
 
-      
+      stopTourSoundsActions(true,true,true,false);
 
 
       loadscene(%1, get(projection_current_params), MERGE, get(ptblendmode));
