@@ -63,27 +63,7 @@
 ]]>
 </action>
 
-<action name="setViewArchitectural">
-	if(normalViewActivated,stopSetViewTweens(););
-	if(current_view_isflat === true,
-		setViewNonFlat(VFOV);
-	);
-	setViewArchitecturalComplete();
-</action>
-
-<action name="setViewArchitecturalComplete">
-	set(view.fovmax, get(panoview.fovmax));
-	set(view.fisheyefovlink, 0.5);
-	tween(view.architectural, 1.0, distance(1.0, 0.45));
-	tween(view.pannini, 0.0, distance(1.0, 0.45), easeOutQuad, if(panniniViewActivated,restoreViewFromPannini();););
-	tween(view.fisheye, 0.0, distance(1.0, 0.45), easeOutQuad, 
-		set(view.stereographic,false);
-		tween(view.vlookat, get(panoview.v), distance(90, 0.45));
-	);
-	tween(view.fov, get(panoview.fov), distance(50, 0.45));
-</action>
-
-<action name="setViewFisheye">
+<action name="setViewStereographic">
 	set(sceneisfull360, false);
 	if(scene[get(xml.scene)].full360,
 		sub(viewhfov, panoview.hmax, panoview.hmin);
@@ -99,20 +79,22 @@
 		if(current_view_isflat === true,
 			setViewNonFlat(VFOV);
 		);
-		setViewFisheyeComplete();
+		setViewStereographicComplete();
 	);
 </action>
 
-<action name="setViewFisheyeComplete">
-	set(view.fisheyefovlink, 1.5);
+<action name="setViewStereographicComplete">
+	set(backtonormalfirst,false);
+	if(view.pannini GE 1.0, set(backtonormalfirst,true));
+	if(view.stereographic == false, set(backtonormalfirst,true));
+	if(backtonormalfirst, hideTooltip();tween(view.fisheye, 0.0 ,distance(1.0, 0.25), easeOutQuad, WAIT); );
+	tween(view.architectural, 0.0, 0.25);
 	set(view.fovmax, get(panoview.fovmax));
-	tween(view.architectural, 0.0, distance(1.0, 0.30));
-	tween(view.fisheye, 0.0, distance(1.0, 0.30), easeOutQuad,
-		set(view.stereographic,false);
-		tween(view.fisheye, 0.45, distance(1.0, 0.75));
-		tween(view.vlookat, get(panoview.v), distance(90, 0.45));
-	);
+	set(view.fisheyefovlink, 1.5);
 	tween(view.pannini, 0.0, distance(1.0, 0.75), easeOutQuad, if(panniniViewActivated,restoreViewFromPannini();););
+	set(view.stereographic, true);
+	tween(view.fisheye, 1.0, distance(1.0, 0.75));
+	tween(view.vlookat, get(panoview.v), 1.25);
 	tween(view.fov, get(panoview.fov), distance(50, 0.45));
 </action>
 
@@ -144,60 +126,6 @@
 	stoptween(view.architectural);
 	stoptween(view.pannini);
 </action>
-
-  <!-- Hide / Show Controls -->
-  <action name="hideTourControls">set(tour_displaycontrols, false);events.dispatch(hidetourcontrols);</action>
-  <action name="showTourControls">set(tour_displaycontrols, true); events.dispatch(showtourcontrols);</action>
-
-
-<action name="setViewFisheyeBall">
-	set(sceneisfull360, false);
-	if(scene[get(xml.scene)].full360,
-		sub(viewhfov, panoview.hmax, panoview.hmin);
-		if (viewhfov == 360,
-			sub(viewvfov, panoview.vmax, panoview.vmin);
-			if (viewvfov == 180,
-				set(sceneisfull360, true);
-			);
-		);
-	);
-	if (sceneisfull360 AND (device.webgl OR device.flash),
-		if(normalViewActivated,stopSetViewTweens(););
-		if(current_view_isflat === true,
-			setViewNonFlat(VFOV);
-		);
-		setViewFisheyeBallComplete();
-	);
-</action>
-
-<action name="setViewFisheyeBallComplete">
-	set(view.fisheyefovlink, 1.5);
-	tween(view.architectural, 0.0, distance(1.0, 0.30));
-	tween(view.pannini, 0.0, distance(1.0, 0.45), easeOutQuad, if(panniniViewActivated,restoreViewFromPannini();););
-	if(panoview.fovmax LE 179, set(view.fovmax, 179);, set(view.fovmax, get(panoview.fovmax)); );
-	tween(view.vlookat, get(panoview.v), distance(90, 0.45));
-	tween(view.fisheye, 1.0, distance(1.0, 0.45), easeOutQuad,
-		set(view.stereographic,false);
-		tween(view.fov, 179, 4.0);
-	);
-</action>
-
-  <!-- Fullscreen Management -->
-  <action name="exitFullScreen" devices="fullscreensupport">set(tour_fullscreen,false);js(setFullscreen(false));</action>
-  <action name="enterFullScreen" devices="fullscreensupport">set(tour_fullscreen,true);js(setFullscreen(true));</action>
-  <action name="switchFullScreen">if(tour_fullscreen,exitFullScreen();,enterFullScreen(););</action>
-
-  
-  <events name="krpanoExitFullscreenEvent"
-    onexitfullscreen="if(tour_fullscreen,exitFullScreenChangeEvent(););"
-    keep="true" />
-
-  <action name="exitFullScreenChangeEvent" devices="fullscreensupport">set(tour_fullscreen,false);events.dispatch(onexitfullscreen);</action>
-  <action name="enterFullScreenChangeEvent" devices="fullscreensupport">set(tour_fullscreen,true);events.dispatch(onenterfullscreen);</action>
-  <action name="exitFullScreenFallback">set(fullscreen,false);</action>
-  <action name="enterFullScreenFallback">set(fullscreen,true);</action>
-  
-  <action name="resizeFullScreenEvent">delayedcall(0,updatescreen(););</action>
 
 <action name="setViewLittlePlanet">
 	set(sceneisfull360, false);
@@ -233,6 +161,184 @@
 	tween(view.fisheye, 1.0, distance(1.0, 0.75));
 	tween(view.fov, 150, distance(179, 0.75));
 </action>
+
+<action name="setViewPannini">
+	set(sceneisfull360, false);
+	if(scene[get(xml.scene)].full360,
+		sub(viewhfov, panoview.hmax, panoview.hmin);
+		if (viewhfov == 360,
+			sub(viewvfov, panoview.vmax, panoview.vmin);
+			if (viewvfov == 180,
+				set(sceneisfull360, true);
+			);
+		);
+	);
+	if (sceneisfull360 AND (device.webgl OR device.flash),
+		if(normalViewActivated,stopSetViewTweens(););
+		if(current_view_isflat === true,
+			setViewNonFlat(VFOV);
+		);
+		setViewPanniniComplete();
+	);
+</action>
+
+<action name="setViewPanniniComplete">
+	set(backtonormalfirst,false);
+	if(view.pannini LT 1.0, set(backtonormalfirst,true); );
+	if(view.stereographic == false, set(backtonormalfirst,true); );
+	if(backtonormalfirst, hideTooltip();tween(view.fisheye, 0.0 ,distance(1.0, 0.25), easeOutQuad, WAIT); );
+	set(view.fisheyefovlink, 1.5);
+	set(view.stereographic, true);
+	set(view.fovmax, get(panoview.fovmax));
+	tween(view.vlookat, get(panoview.v), 1.25);
+	tween(view.pannini, 1.0, distance(1.0, 0.75), easeOutQuad, limitViewForPannini());
+	tween(view.architectural, 0.0, 0.25);
+	tween(view.fisheye, 1.0, distance(1.0, 0.75));
+	tween(view.fov, get(panoview.fov), distance(50, 0.45));
+</action>
+
+<action name="limitViewForPannini">
+	if(view.fov GT 130,
+		tween(view.fov, 130.00, 0.45, easeOutQuad, set(view.fovmax, 130);set(view.limitview, "range"););
+	,
+		set(view.fovmax, 130);
+		set(view.limitview, "range");
+	);
+</action>
+
+<krpano panniniViewActivated="true" />
+<action name="restoreViewFromPannini">
+	if(scene[get(xml.scene)].planar,
+		set(view.limitview, fullrange);
+	,
+		set(view.limitview, range);
+		set(view.hlookatmin, get(panoview.hmin));
+		set(view.hlookatmax, get(panoview.hmax));
+		set(view.vlookatmin, get(panoview.vmin));
+		set(view.vlookatmax, get(panoview.vmax));
+	);
+</action>
+
+<action name="applyLimitsForPannini">
+	if(view.pannini == 1.0,
+		div(halffov, get(view.fov), 2);
+		Math.ceil(halffov);
+		roundval(halffov);
+		set(view.vlookatmax, get(halffov));
+		inc(halffov);
+		txtadd(halffov,'-',get(halffov));
+		set(view.vlookatmin, get(halffov));
+	);
+</action>
+
+<events name="viewPanniniEvents" onviewchanged="if(view.pannini == 1.0,applyLimitsForPannini(););" devices="webgl.or.flash" keep="true" />
+
+  <!-- Fullscreen Management -->
+  <action name="exitFullScreen" devices="fullscreensupport">set(tour_fullscreen,false);js(setFullscreen(false));</action>
+  <action name="enterFullScreen" devices="fullscreensupport">set(tour_fullscreen,true);js(setFullscreen(true));</action>
+  <action name="switchFullScreen">if(tour_fullscreen,exitFullScreen();,enterFullScreen(););</action>
+
+  
+  <events name="krpanoExitFullscreenEvent"
+    onexitfullscreen="if(tour_fullscreen,exitFullScreenChangeEvent(););"
+    keep="true" />
+
+  <action name="exitFullScreenChangeEvent" devices="fullscreensupport">set(tour_fullscreen,false);events.dispatch(onexitfullscreen);</action>
+  <action name="enterFullScreenChangeEvent" devices="fullscreensupport">set(tour_fullscreen,true);events.dispatch(onenterfullscreen);</action>
+  <action name="exitFullScreenFallback">set(fullscreen,false);</action>
+  <action name="enterFullScreenFallback">set(fullscreen,true);</action>
+  
+  <action name="resizeFullScreenEvent">delayedcall(0,updatescreen(););</action>
+
+<action name="setViewArchitectural">
+	if(normalViewActivated,stopSetViewTweens(););
+	if(current_view_isflat === true,
+		setViewNonFlat(VFOV);
+	);
+	setViewArchitecturalComplete();
+</action>
+
+<action name="setViewArchitecturalComplete">
+	set(view.fovmax, get(panoview.fovmax));
+	set(view.fisheyefovlink, 0.5);
+	tween(view.architectural, 1.0, distance(1.0, 0.45));
+	tween(view.pannini, 0.0, distance(1.0, 0.45), easeOutQuad, if(panniniViewActivated,restoreViewFromPannini();););
+	tween(view.fisheye, 0.0, distance(1.0, 0.45), easeOutQuad, 
+		set(view.stereographic,false);
+		tween(view.vlookat, get(panoview.v), distance(90, 0.45));
+	);
+	tween(view.fov, get(panoview.fov), distance(50, 0.45));
+</action>
+
+<action name="setViewFisheyeBall">
+	set(sceneisfull360, false);
+	if(scene[get(xml.scene)].full360,
+		sub(viewhfov, panoview.hmax, panoview.hmin);
+		if (viewhfov == 360,
+			sub(viewvfov, panoview.vmax, panoview.vmin);
+			if (viewvfov == 180,
+				set(sceneisfull360, true);
+			);
+		);
+	);
+	if (sceneisfull360 AND (device.webgl OR device.flash),
+		if(normalViewActivated,stopSetViewTweens(););
+		if(current_view_isflat === true,
+			setViewNonFlat(VFOV);
+		);
+		setViewFisheyeBallComplete();
+	);
+</action>
+
+<action name="setViewFisheyeBallComplete">
+	set(view.fisheyefovlink, 1.5);
+	tween(view.architectural, 0.0, distance(1.0, 0.30));
+	tween(view.pannini, 0.0, distance(1.0, 0.45), easeOutQuad, if(panniniViewActivated,restoreViewFromPannini();););
+	if(panoview.fovmax LE 179, set(view.fovmax, 179);, set(view.fovmax, get(panoview.fovmax)); );
+	tween(view.vlookat, get(panoview.v), distance(90, 0.45));
+	tween(view.fisheye, 1.0, distance(1.0, 0.45), easeOutQuad,
+		set(view.stereographic,false);
+		tween(view.fov, 179, 4.0);
+	);
+</action>
+
+<action name="setViewFisheye">
+	set(sceneisfull360, false);
+	if(scene[get(xml.scene)].full360,
+		sub(viewhfov, panoview.hmax, panoview.hmin);
+		if (viewhfov == 360,
+			sub(viewvfov, panoview.vmax, panoview.vmin);
+			if (viewvfov == 180,
+				set(sceneisfull360, true);
+			);
+		);
+	);
+	if (sceneisfull360 AND (device.webgl OR device.flash),
+		if(normalViewActivated,stopSetViewTweens(););
+		if(current_view_isflat === true,
+			setViewNonFlat(VFOV);
+		);
+		setViewFisheyeComplete();
+	);
+</action>
+
+<action name="setViewFisheyeComplete">
+	set(view.fisheyefovlink, 1.5);
+	set(view.fovmax, get(panoview.fovmax));
+	tween(view.architectural, 0.0, distance(1.0, 0.30));
+	tween(view.fisheye, 0.0, distance(1.0, 0.30), easeOutQuad,
+		set(view.stereographic,false);
+		tween(view.fisheye, 0.45, distance(1.0, 0.75));
+		tween(view.vlookat, get(panoview.v), distance(90, 0.45));
+	);
+	tween(view.pannini, 0.0, distance(1.0, 0.75), easeOutQuad, if(panniniViewActivated,restoreViewFromPannini();););
+	tween(view.fov, get(panoview.fov), distance(50, 0.45));
+</action>
+
+  <!-- Hide / Show Controls -->
+  <action name="hideTourControls">set(tour_displaycontrols, false);events.dispatch(hidetourcontrols);</action>
+  <action name="showTourControls">set(tour_displaycontrols, true); events.dispatch(showtourcontrols);</action>
+
 
   <!-- Sounds Management -->
   <plugin name="soundinterface"
@@ -477,7 +583,7 @@
     );
   </action>
   <action name="preloadSounds">
-    preloadsound("_08236.mp3");
+    preloadsound("saundf.mp3");
   </action>
 
   <action name="play3DLocalSounds">
@@ -712,111 +818,5 @@
       );
     );
   </action>
-
-<action name="setViewStereographic">
-	set(sceneisfull360, false);
-	if(scene[get(xml.scene)].full360,
-		sub(viewhfov, panoview.hmax, panoview.hmin);
-		if (viewhfov == 360,
-			sub(viewvfov, panoview.vmax, panoview.vmin);
-			if (viewvfov == 180,
-				set(sceneisfull360, true);
-			);
-		);
-	);
-	if (sceneisfull360 AND (device.webgl OR device.flash),
-		if(normalViewActivated,stopSetViewTweens(););
-		if(current_view_isflat === true,
-			setViewNonFlat(VFOV);
-		);
-		setViewStereographicComplete();
-	);
-</action>
-
-<action name="setViewStereographicComplete">
-	set(backtonormalfirst,false);
-	if(view.pannini GE 1.0, set(backtonormalfirst,true));
-	if(view.stereographic == false, set(backtonormalfirst,true));
-	if(backtonormalfirst, hideTooltip();tween(view.fisheye, 0.0 ,distance(1.0, 0.25), easeOutQuad, WAIT); );
-	tween(view.architectural, 0.0, 0.25);
-	set(view.fovmax, get(panoview.fovmax));
-	set(view.fisheyefovlink, 1.5);
-	tween(view.pannini, 0.0, distance(1.0, 0.75), easeOutQuad, if(panniniViewActivated,restoreViewFromPannini();););
-	set(view.stereographic, true);
-	tween(view.fisheye, 1.0, distance(1.0, 0.75));
-	tween(view.vlookat, get(panoview.v), 1.25);
-	tween(view.fov, get(panoview.fov), distance(50, 0.45));
-</action>
-
-<action name="setViewPannini">
-	set(sceneisfull360, false);
-	if(scene[get(xml.scene)].full360,
-		sub(viewhfov, panoview.hmax, panoview.hmin);
-		if (viewhfov == 360,
-			sub(viewvfov, panoview.vmax, panoview.vmin);
-			if (viewvfov == 180,
-				set(sceneisfull360, true);
-			);
-		);
-	);
-	if (sceneisfull360 AND (device.webgl OR device.flash),
-		if(normalViewActivated,stopSetViewTweens(););
-		if(current_view_isflat === true,
-			setViewNonFlat(VFOV);
-		);
-		setViewPanniniComplete();
-	);
-</action>
-
-<action name="setViewPanniniComplete">
-	set(backtonormalfirst,false);
-	if(view.pannini LT 1.0, set(backtonormalfirst,true); );
-	if(view.stereographic == false, set(backtonormalfirst,true); );
-	if(backtonormalfirst, hideTooltip();tween(view.fisheye, 0.0 ,distance(1.0, 0.25), easeOutQuad, WAIT); );
-	set(view.fisheyefovlink, 1.5);
-	set(view.stereographic, true);
-	set(view.fovmax, get(panoview.fovmax));
-	tween(view.vlookat, get(panoview.v), 1.25);
-	tween(view.pannini, 1.0, distance(1.0, 0.75), easeOutQuad, limitViewForPannini());
-	tween(view.architectural, 0.0, 0.25);
-	tween(view.fisheye, 1.0, distance(1.0, 0.75));
-	tween(view.fov, get(panoview.fov), distance(50, 0.45));
-</action>
-
-<action name="limitViewForPannini">
-	if(view.fov GT 130,
-		tween(view.fov, 130.00, 0.45, easeOutQuad, set(view.fovmax, 130);set(view.limitview, "range"););
-	,
-		set(view.fovmax, 130);
-		set(view.limitview, "range");
-	);
-</action>
-
-<krpano panniniViewActivated="true" />
-<action name="restoreViewFromPannini">
-	if(scene[get(xml.scene)].planar,
-		set(view.limitview, fullrange);
-	,
-		set(view.limitview, range);
-		set(view.hlookatmin, get(panoview.hmin));
-		set(view.hlookatmax, get(panoview.hmax));
-		set(view.vlookatmin, get(panoview.vmin));
-		set(view.vlookatmax, get(panoview.vmax));
-	);
-</action>
-
-<action name="applyLimitsForPannini">
-	if(view.pannini == 1.0,
-		div(halffov, get(view.fov), 2);
-		Math.ceil(halffov);
-		roundval(halffov);
-		set(view.vlookatmax, get(halffov));
-		inc(halffov);
-		txtadd(halffov,'-',get(halffov));
-		set(view.vlookatmin, get(halffov));
-	);
-</action>
-
-<events name="viewPanniniEvents" onviewchanged="if(view.pannini == 1.0,applyLimitsForPannini(););" devices="webgl.or.flash" keep="true" />
 
 </krpano>
